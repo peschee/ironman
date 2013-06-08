@@ -2,7 +2,7 @@
 
 define('ARTWORK_WEB_DIR', '/img/generated');
 define('WEB_PATH', __DIR__);
-define('PAGODA_SHARED_PATH', '/var/www');
+define('PAGODA_SHARED_PATH', '/var/www/public_html');
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
