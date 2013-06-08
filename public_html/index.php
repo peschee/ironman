@@ -19,4 +19,3 @@ try {
 }
 
 printf('<p>Image <a href="%s">%s</a> has been generated</p>', $imageLink, $image);
-
