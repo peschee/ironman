@@ -2,7 +2,7 @@
 
 define('ARTWORK_WEB_DIR', '/img/generated');
 define('WEB_PATH', __DIR__);
-define('PAGODA_SHARED_PATH', '/home/mfd-ironman/shared');
+define('PAGODA_SHARED_PATH', '/var/www');
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
