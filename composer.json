@@ -11,7 +11,8 @@
     "minimum-stability": "dev",
     "require": {
         "imagine/imagine": "0.4.1",
-        "kriswallsmith/buzz": "0.10"
+        "kriswallsmith/buzz": "0.10",
+        "silex/silex": "1.0.*@dev"
     },
     "autoload": {
         "psr-0": {
