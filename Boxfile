@@ -1,7 +1,7 @@
 web1:
     name: mfd-ironman
     shared_writable_dirs:
-        - img/generated
+        - /var/www/public_html/img/generated
     document_root: public_html
     php_version: 5.3.23
     php_extensions:
