@@ -1,12 +1,11 @@
 web1:
     name: mfd-ironman
     shared_writable_dirs:
-        - /var/www/public_html/img/generated
+        - /img/generated
     document_root: public_html
     php_version: 5.3.23
     php_extensions:
         - gd
         - zip
     after_build:
-        - "if [ ! -f composer.phar ]; then curl -s http://getcomposer.org/installer | php; fi; php composer.phar install"
-
+        - "if [ ! -f composer.phar ]; then curl -s http://getcomposer.org/installer | php; fi; php composer.phar install --prefer-source"
