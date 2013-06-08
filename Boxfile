@@ -9,3 +9,7 @@ web1:
         - zip
     after_build:
         - "if [ ! -f composer.phar ]; then curl -s http://getcomposer.org/installer | php; fi; php composer.phar install --prefer-source"
+
+global:
+  env:
+    - ENV: production
