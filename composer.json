@@ -1,0 +1,21 @@
+{
+    "name": "peschee/mdf-ironman",
+    "description": "A test script for Message From Dan",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Peter Siska",
+            "email": "pesche@gridonic.ch"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "imagine/imagine": "0.4.1",
+        "kriswallsmith/buzz": "0.10"
+    },
+    "autoload": {
+        "psr-0": {
+            "Ironman": "src/"
+        }
+    }
+}
