@@ -9,17 +9,31 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 /** @var \Silex\Application $app */
 $app = require_once __DIR__ . '/bootstrap.php';
 
+/**
+ * Homepage route
+ */
 $app->get('/', function () use ($app) {
 
-    $text = 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.';
+    $artwork = new Artwork($app['config.default_text']);
+    $imageFile = $artwork->generateAndSaveImage($app['config.target_images_dir']);
+
+    $imageLink = 'http://' . $_SERVER['HTTP_HOST'] . $app['config.artwork_web_dir'] . '/'. $imageFile;
+
+    return new Response(sprintf('<p>Image <a href="%s">%s</a> has been generated</p>', $imageLink, $imageFile));
+})->bind('homepage');
+
+/**
+ * Generate image from parameters
+ */
+$app->get('/generate/{text}', function ($text) use ($app) {
 
     $artwork = new Artwork($text);
-    $image = $artwork->generateAndSaveImage($app['config.target_images_dir']);
+    $imageFile = $artwork->generateAndSaveImage($app['config.target_images_dir'], false, 'png');
 
-    $imageLink = 'http://' . $_SERVER['HTTP_HOST'] . $app['config.artwork_web_dir'] . '/'. $image;
-
-    return new Response(sprintf('<p>Image <a href="%s">%s</a> has been generated</p>', $imageLink, $image));
-})->bind('homepage');
+    return new Response(sprintf('<img src="%s" />', $app['config.artwork_web_dir'] . '/'. $imageFile));
+})
+->bind('image_generate')
+->value('text', $app['config.default_text']);
 
 $app->error(function(\Exception $e, $code) use ($app) {
 
