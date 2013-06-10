@@ -24,6 +24,7 @@ class Artwork {
      *
      * @param $path string The path to save the image to
      * @param bool $useTimestamp If false, only the md5 sum of the text is going to be use for filename generation
+     * @param string $fileType The filetype to generate (gif, png, jpg)
      * @throws \RuntimeException
      * @return string The full path to the generated image
      */
@@ -33,9 +34,10 @@ class Artwork {
         }
 
         $count = $this->countWordLetters($this->text);
-        $top = array_slice($count, 0, 1, true);
-        $topFour = array_slice($count, 1, 4, true);
-        $topFourSum = array_sum($topFour);
+        $normalized = $this->normalizeArray($count);
+
+        $top = array_slice($normalized, 0, 1, true);
+        $topOther = array_slice($normalized, 1, 6, true);
 
         // nice flat UI colors
         // @see http://flatuicolors.com/
@@ -44,7 +46,9 @@ class Artwork {
             '#e67e22',
             '#d35400',
             '#e74c3c',
-            '#c0392b'
+            '#c0392b',
+            '#ecf0f1',
+            '#bdc3c7',
         );
 
         $width = $height = 400;
@@ -60,15 +64,16 @@ class Artwork {
         // draw the initial circle for the word with the highest count
         $image
           ->draw()
-          ->ellipse($imageCenter, $imageBox->scale(0.999), new Color(array_shift($colors)), true);
+          ->ellipse($imageCenter, $imageBox->scale(0.99), new Color(array_shift($colors)), true);
 
-        foreach ($topFour as $letters => $count) {
-            $percentage = 100 / $topFourSum * $count;
-            $percentage -= 0.001;
+        foreach ($topOther as $count) {
+            if ($count === 0) {
+                $count = 0.01;
+            }
 
             $image
               ->draw()
-              ->ellipse($imageCenter, $imageBox->scale($percentage / 100), new Color(array_shift($colors)), true);
+              ->ellipse($imageCenter, $imageBox->scale($count), new Color(array_shift($colors)), true);
         }
 
         $image->save($path . DIRECTORY_SEPARATOR . $filename);
@@ -99,6 +104,26 @@ class Artwork {
         arsort($count);
 
         return $count;
+    }
+
+    /**
+     * Normalizes an array (xi - xmin) / (xmax - xmin)
+     *
+     * @param $array Array to normalize
+     * @return array Array with normalized values (between 0 and 1)
+     */
+    protected function normalizeArray($array) {
+        $min = min($array);
+        $max = max($array);
+        $div = ($max - $min) === 0 ? 1 : $max - $min;
+
+        $normalized = array();
+
+        foreach ($array as $key => $value) {
+            $normalized[$key] = ($value - $min) / $div;
+        }
+
+        return $normalized;
     }
 
 }
