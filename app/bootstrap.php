@@ -8,7 +8,14 @@ use Silex\Provider\ServiceControllerServiceProvider;
 
 $app = new Application();
 
-require_once __DIR__ . '/config.php';
+if (isset($_SERVER['ENV']) && $_SERVER['ENV'] === 'production') {
+    $config = 'config.prod.php';
+} else {
+    $config = 'config.php';
+}
+
+require_once __DIR__ . DIRECTORY_SEPARATOR . $config;
+
 
 $app->register(new UrlGeneratorServiceProvider());
 $app->register(new ServiceControllerServiceProvider());
