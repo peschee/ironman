@@ -8,6 +8,11 @@ use Imagine\Image\Color;
 use Imagine\Image\Point;
 use Imagine\Image\Point\Center;
 
+/**
+ * Artwork class for generating images.
+ *
+ * @package Ironman
+ */
 class Artwork {
 
     protected $text;
