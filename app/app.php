@@ -28,6 +28,26 @@ $app->get('/', function () use ($app) {
  */
 $app->get('/generate/{text}', function ($text) use ($app) {
 
+    if ($text === 'random') {
+
+        $request = new Buzz\Message\Request('GET', '/paragraph?count=1&length=5', 'https://montanaflynn-lorem-text-generator.p.mashape.com');
+        $request->setHeaders(array('X-Mashape-Authorization' => $app['config.mashape_api_key']));
+
+        $response = new Buzz\Message\Response();
+
+        $client = new Buzz\Client\Curl();
+        $client->send($request, $response);
+
+        if (!$response->isOk()) {
+            $responseArray = json_decode($response->getContent());
+
+            $app->abort(500, sprintf('Something went wrong, got an error response from the geocoding API: %s', $responseArray->message));
+        }
+
+        $responseArray = json_decode($response->getContent());
+        $text = array_shift($responseArray);
+    }
+
     $artwork = new Artwork($text);
     $imageFile = $artwork->generateAndSaveImage($app['config.target_images_dir'], false, 'png');
 
@@ -55,7 +75,7 @@ $app->post('/generate', function (Request $request)  use ($app) {
             }
 
             // redirect request back to MFD
-            
+
         }
     }
 });
