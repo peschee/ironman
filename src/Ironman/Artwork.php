@@ -33,7 +33,7 @@ class Artwork {
      * @throws \RuntimeException
      * @return string The full path to the generated image
      */
-    public function generateAndSaveImage($path, $useTimestamp = true, $fileType = 'gif') {
+    public function generateAndSaveImage($path, $size = 400, $useTimestamp = true, $fileType = 'gif') {
         if (!is_dir($path) || !is_writable($path)) {
             throw new \RuntimeException(sprintf('Path "%s" either does not exist or is not writable.', $path));
         }
@@ -56,7 +56,7 @@ class Artwork {
             '#bdc3c7',
         );
 
-        $width = $height = 400;
+        $width = $height = $size;
 
         $filename = ($useTimestamp ? md5($this->created . $this->text) : md5($this->text)) . '.' . $fileType;
 

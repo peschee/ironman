@@ -16,7 +16,7 @@ $app = require_once __DIR__ . '/bootstrap.php';
 $app->get('/', function () use ($app) {
 
     $artwork = new Artwork($app['config.default_text']);
-    $imageFile = $artwork->generateAndSaveImage($app['config.target_images_dir']);
+    $imageFile = $artwork->generateAndSaveImage($app['config.target_images_dir'], $app['config.generated_image_size']);
 
     $imageLink = 'http://' . $_SERVER['HTTP_HOST'] . $app['config.artwork_web_dir'] . '/'. $imageFile;
 
@@ -49,7 +49,7 @@ $app->get('/generate/{text}', function ($text) use ($app) {
     }
 
     $artwork = new Artwork($text);
-    $imageFile = $artwork->generateAndSaveImage($app['config.target_images_dir'], false, 'png');
+    $imageFile = $artwork->generateAndSaveImage($app['config.target_images_dir'], $app['config.generated_image_size'], false, 'png');
 
     return new Response(sprintf('<img src="%s" />', $app['config.artwork_web_dir'] . '/'. $imageFile));
 })
@@ -66,7 +66,7 @@ $app->post('/generate', function (Request $request)  use ($app) {
 
         if ($text = $request->get('text')) {
             $artwork = new Artwork($text);
-            $imageFile = $artwork->generateAndSaveImage($app['config.target_images_dir'], false, 'png');
+            $imageFile = $artwork->generateAndSaveImage($app['config.target_images_dir'], $app['config.generated_image_size'], false, 'png');
 
             if (!$request->get('rfa_id')) {
                 return $app->json(array(), 201, array(

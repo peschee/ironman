@@ -12,3 +12,5 @@ I don't think they tried to market it to the billionaire, spelunking, base-jumpi
 
 $app['config.mashape_api_key'] = $_SERVER['MASHAPE_API_KEY'];
 
+$app['config.generated_image_size'] = 600;
+
