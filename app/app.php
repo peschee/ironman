@@ -59,7 +59,7 @@ $app->get('/generate/{text}', function ($text) use ($app) {
 /**
  * Post method to generate images from a 'text' json parameter
  */
-$app->post('/generate', function (Request $request)  use ($app) {
+$app->post('/generate', function (Request $request) use ($app) {
     if (0 === strpos($request->headers->get('Content-Type'), 'application/json')) {
         $data = json_decode($request->getContent(), true);
         $request->request->replace(is_array($data) ? $data : array());
@@ -68,14 +68,49 @@ $app->post('/generate', function (Request $request)  use ($app) {
             $artwork = new Artwork($text);
             $imageFile = $artwork->generateAndSaveImage($app['config.target_images_dir'], $app['config.generated_image_size'], false, 'png');
 
-            if (!$request->get('rfa_id')) {
-                return $app->json(array(), 201, array(
-                    'Location' => $request->getSchemeAndHttpHost() . $request->getBasePath() . $app['config.artwork_web_dir'] . '/'. $imageFile
-                ));
-            }
 
-            // redirect request back to MFD
+           return $app->json(array(), 201, array(
+                'Location' => $request->getSchemeAndHttpHost() . $request->getBasePath() . $app['config.artwork_web_dir'] . '/'. $imageFile
+           ));
+        }
+    }
 
+    return $app->abort(500);
+});
+
+$app->post('/callback', function (Request $request) use ($app) {
+    if (0 === strpos($request->headers->get('Content-Type'), 'application/json')) {
+        $data = json_decode($request->getContent(), true);
+        $request->request->replace(is_array($data) ? $data : array());
+
+        if ($text = $request->get('text')) {
+            $rfaId = $request->get('rfa_id');
+            $imageFormat = 'png';
+
+            $artwork = new Artwork($text);
+            $imageFile = $artwork->generateAndSaveImage($app['config.target_images_dir'], $app['config.generated_image_size'], false, $imageFormat);
+
+            $fileUrl = $request->getSchemeAndHttpHost() . $request->getBasePath() . $app['config.artwork_web_dir'] . '/'. $imageFile;
+
+            $request = new Buzz\Message\Request('POST', '/13mxfjp1', 'http://requestb.in');
+            $response = new Buzz\Message\Response();
+
+            $requestArray = array(
+                'rfa_id' => $rfaId,
+                'format' => $imageFormat,
+                'name' => md5('bla'),
+                'url' => $fileUrl
+            );
+
+            $client = new Buzz\Client\Curl();
+            $client->send($request, $response, array(
+                CURLOPT_POSTFIELDS => json_encode($requestArray),
+                CURLOPT_HTTPHEADER => array('Content-Type: application/json')
+            ));
+
+            return $app->json(array(), 201, array(
+                'Location' => $fileUrl
+            ));
         }
     }
 });
