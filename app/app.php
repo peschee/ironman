@@ -92,7 +92,7 @@ $app->post('/callback', function (Request $request) use ($app) {
 
             $fileUrl = $request->getSchemeAndHttpHost() . $request->getBasePath() . $app['config.artwork_web_dir'] . '/'. $imageFile;
 
-            $request = new Buzz\Message\Request('POST', '/13mxfjp1', 'http://requestb.in');
+            $request = new Buzz\Message\Request('POST', '/artwork_handler.php', 'http://stage.messagefromdan.com');
             $response = new Buzz\Message\Response();
 
             $requestArray = array(
