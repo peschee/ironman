@@ -85,7 +85,7 @@ $app->post('/callback', function (Request $request) use ($app) {
 
         if ($text = $request->get('text')) {
             $rfaId = $request->get('rfa_id');
-            $callbackUrl = $request->get('callback_url') ? $request->get('callback_url') : 'http://stage.messagefromdan.com';
+            $callbackUrl = $request->get('callback_url') ? $request->get('callback_url') : 'http://stage.messagefromdan.com/artwork_handler.php';
             $imageFormat = 'png';
 
             $artwork = new Artwork($text);
@@ -93,7 +93,7 @@ $app->post('/callback', function (Request $request) use ($app) {
 
             $fileUrl = $request->getSchemeAndHttpHost() . $request->getBasePath() . $app['config.artwork_web_dir'] . '/'. $imageFile;
 
-            $request = new Buzz\Message\Request('POST', '/artwork_handler.php', $callbackUrl);
+            $request = new Buzz\Message\Request('POST', '', $callbackUrl);
             $response = new Buzz\Message\Response();
 
             $requestArray = array(
@@ -106,9 +106,10 @@ $app->post('/callback', function (Request $request) use ($app) {
             try {
                 $client = new Buzz\Client\Curl();
                 $client->send($request, $response, array(
-                        CURLOPT_POSTFIELDS => json_encode($requestArray),
-                        CURLOPT_HTTPHEADER => array('Content-Type: application/json')
-                    ));
+                    CURLOPT_USERAGENT => "Ironman",
+                    CURLOPT_POSTFIELDS => json_encode($requestArray),
+                    CURLOPT_HTTPHEADER => array('Content-Type: application/json')
+                ));
 
                 $responseCode = $response->getStatusCode() === 200 ? 201 : $response->getStatusCode();
                 $responseHeaders = $response === 201 ? array('Location' => $fileUrl) : array();
