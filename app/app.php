@@ -100,7 +100,7 @@ $app->post('/callback', function (Request $request) use ($app) {
                 'rfa_id' => $rfaId,
                 'type' => 'picture',
                 'format' => $imageFormat,
-                'name' => md5('bla'),
+                'name' => md5($rfaId),
                 'url' => $fileUrl
             );
 
