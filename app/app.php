@@ -98,6 +98,7 @@ $app->post('/callback', function (Request $request) use ($app) {
 
             $requestArray = array(
                 'rfa_id' => $rfaId,
+                'type' => 'picture',
                 'format' => $imageFormat,
                 'name' => md5('bla'),
                 'url' => $fileUrl
