@@ -85,6 +85,7 @@ $app->post('/callback', function (Request $request) use ($app) {
 
         if ($text = $request->get('text')) {
             $rfaId = $request->get('rfa_id');
+            $callbackUrl = $request->get('callback_url') ? $request->get('callback_url') : 'http://stage.messagefromdan.com';
             $imageFormat = 'png';
 
             $artwork = new Artwork($text);
@@ -92,7 +93,7 @@ $app->post('/callback', function (Request $request) use ($app) {
 
             $fileUrl = $request->getSchemeAndHttpHost() . $request->getBasePath() . $app['config.artwork_web_dir'] . '/'. $imageFile;
 
-            $request = new Buzz\Message\Request('POST', '/artwork_handler.php', 'http://stage.messagefromdan.com');
+            $request = new Buzz\Message\Request('POST', '/artwork_handler.php', $callbackUrl);
             $response = new Buzz\Message\Response();
 
             $requestArray = array(
@@ -102,15 +103,34 @@ $app->post('/callback', function (Request $request) use ($app) {
                 'url' => $fileUrl
             );
 
-            $client = new Buzz\Client\Curl();
-            $client->send($request, $response, array(
-                CURLOPT_POSTFIELDS => json_encode($requestArray),
-                CURLOPT_HTTPHEADER => array('Content-Type: application/json')
-            ));
+            try {
+                $client = new Buzz\Client\Curl();
+                $client->send($request, $response, array(
+                        CURLOPT_POSTFIELDS => json_encode($requestArray),
+                        CURLOPT_HTTPHEADER => array('Content-Type: application/json')
+                    ));
 
-            return $app->json(array(), 201, array(
-                'Location' => $fileUrl
-            ));
+                $responseCode = $response->getStatusCode() === 200 ? 201 : $response->getStatusCode();
+                $responseHeaders = $response === 201 ? array('Location' => $fileUrl) : array();
+
+                return $app->json(array(
+                        'request' => array(
+                            'url' => $callbackUrl
+                        ),
+                        'response' => array(
+                            'code' => $response->getStatusCode(),
+                            'content' => $response->getContent()
+                        )
+                    ), $responseCode, $responseHeaders);
+            } catch (\Exception $e) {
+                return $app->json(array(
+                    'error' => array(
+                        'message' => $e->getMessage(),
+                        'code' => $e->getCode()
+                    )
+                ), 500);
+            }
+
         }
     }
 });
