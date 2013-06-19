@@ -112,11 +112,12 @@ $app->post('/callback', function (Request $request) use ($app) {
                 ));
 
                 $responseCode = $response->getStatusCode() === 200 ? 201 : $response->getStatusCode();
-                $responseHeaders = $response === 201 ? array('Location' => $fileUrl) : array();
+                $responseHeaders = $responseCode === 201 ? array('Location' => $fileUrl) : array();
 
                 return $app->json(array(
                         'request' => array(
-                            'url' => $callbackUrl
+                            'url' => $callbackUrl,
+                            'body' => $requestArray
                         ),
                         'response' => array(
                             'code' => $response->getStatusCode(),
