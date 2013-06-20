@@ -12,6 +12,7 @@
     "require": {
         "imagine/imagine": "0.4.1",
         "kriswallsmith/buzz": "0.10",
+        "fzaninotto/faker": "~1.2.0",
         "silex/silex": "1.0.*@dev"
     },
     "autoload": {

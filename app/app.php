@@ -96,11 +96,17 @@ $app->post('/callback', function (Request $request) use ($app) {
             $request = new Buzz\Message\Request('POST', '', $callbackUrl);
             $response = new Buzz\Message\Response();
 
+            // generate random name
+            $faker = Faker\Factory::create('fr_FR');
+            $fullName = $faker->name;
+            $names = explode(' ', $fullName);
+            $firstName = isset($names[0]) ? $names[0] : $fullName;
+
             $requestArray = array(
                 'rfa_id' => $rfaId,
                 'type' => 'picture',
                 'format' => $imageFormat,
-                'name' => md5($rfaId),
+                'name' => $firstName,
                 'url' => $fileUrl
             );
 
