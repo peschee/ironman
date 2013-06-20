@@ -47,13 +47,35 @@ class Artwork {
         // nice flat UI colors
         // @see http://flatuicolors.com/
         $colors = array(
-            '#f1c40f',
-            '#e67e22',
-            '#d35400',
-            '#e74c3c',
-            '#c0392b',
-            '#ecf0f1',
-            '#bdc3c7',
+            'grays' => array(
+                '#ecf0f1',
+                '#bdc3c7',
+                '#95a5a6',
+                '#7f8c8d',
+                '#2c3e50',
+                '#34495e',
+                '#183047',
+            ),
+
+            'greens' => array(
+                '#2ecc71',
+                '#27ae60',
+                '#1abc9c',
+                '#16a085',
+                '#bdc3c7',
+                '#95a5a6',
+                '#7f8c8d',
+            ),
+
+            'reds' => array(
+                '#f1c40f',
+                '#e67e22',
+                '#d35400',
+                '#e74c3c',
+                '#c0392b',
+                '#ecf0f1',
+                '#bdc3c7',
+            ),
         );
 
         $width = $height = $size;
@@ -66,10 +88,12 @@ class Artwork {
         $imageCenter = new Center($imageBox);
         $image = $imagine->create($imageBox, new Color('fff'));
 
+        $selectedColors = $colors[array_rand($colors)];
+
         // draw the initial circle for the word with the highest count
         $image
           ->draw()
-          ->ellipse($imageCenter, $imageBox->scale(0.99), new Color(array_shift($colors)), true);
+          ->ellipse($imageCenter, $imageBox->scale(0.99), new Color(array_shift($selectedColors)), true);
 
         foreach ($topOther as $count) {
             if ($count === 0) {
@@ -78,7 +102,7 @@ class Artwork {
 
             $image
               ->draw()
-              ->ellipse($imageCenter, $imageBox->scale($count), new Color(array_shift($colors)), true);
+              ->ellipse($imageCenter, $imageBox->scale($count), new Color(array_shift($selectedColors)), true);
         }
 
         $image->save($path . DIRECTORY_SEPARATOR . $filename);
