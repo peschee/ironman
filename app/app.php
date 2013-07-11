@@ -68,7 +68,6 @@ $app->post('/generate', function (Request $request) use ($app) {
             $artwork = new Artwork($text);
             $imageFile = $artwork->generateAndSaveImage($app['config.target_images_dir'], $app['config.generated_image_size'], false, 'png');
 
-
            return $app->json(array(), 201, array(
                 'Location' => $request->getSchemeAndHttpHost() . $request->getBasePath() . $app['config.artwork_web_dir'] . '/'. $imageFile
            ));
@@ -104,7 +103,7 @@ $app->post('/callback', function (Request $request) use ($app) {
 
             $requestArray = array(
                 'rfa_id' => $rfaId,
-                'type' => 'picture',
+                'type' => 'image',
                 'format' => $imageFormat,
                 'name' => $firstName,
                 'url' => $fileUrl

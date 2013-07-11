@@ -28,6 +28,7 @@ class Artwork {
      * Generates and saves the artwork image.
      *
      * @param $path string The path to save the image to
+     * @param int $size Default dimensions (size will be used for both, width + height)
      * @param bool $useTimestamp If false, only the md5 sum of the text is going to be use for filename generation
      * @param string $fileType The filetype to generate (gif, png, jpg)
      * @throws \RuntimeException
